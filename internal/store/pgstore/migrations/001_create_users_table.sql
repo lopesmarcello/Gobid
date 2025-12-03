@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash BYTEA NOT NULL,
   bio TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now (),
-  updatet_at TIMESTAMPTZ NOT NULL DEFAULT now ()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now ()
 )
 ---- create above / drop below ----
 DROP TABLE IF EXISTS users;

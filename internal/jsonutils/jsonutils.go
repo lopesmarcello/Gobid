@@ -1,3 +1,4 @@
+// Package jsonutils to ser utils fn for dealing with JSON
 package jsonutils
 
 import (
@@ -8,7 +9,7 @@ import (
 	"github.com/lopesmarcello/gobid/internal/validator"
 )
 
-func EncodeJson[T any](w http.ResponseWriter, r *http.Request, status int, data T) error {
+func EncodeJSON[T any](w http.ResponseWriter, r *http.Request, status int, data T) error {
 	w.Header().Set("Content-type", "application/json")
 	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(data); err != nil {
@@ -18,10 +19,10 @@ func EncodeJson[T any](w http.ResponseWriter, r *http.Request, status int, data 
 	return nil
 }
 
-func DecodeValidJson[T validator.Validator](r *http.Request) (T, map[string]string, error) {
+func DecodeValidJSON[T validator.Validator](r *http.Request) (T, map[string]string, error) {
 	var data T
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		return data, nil, fmt.Errorf("Error decoding json %w", err)
+		return data, nil, fmt.Errorf("error decoding json %w", err)
 	}
 
 	if problems := data.Valid(r.Context()); len(problems) > 0 {
@@ -31,15 +32,15 @@ func DecodeValidJson[T validator.Validator](r *http.Request) (T, map[string]stri
 	return data, nil, nil
 }
 
-func DecodeJson[T any](r *http.Request) (T, error) {
+func DecodeJSON[T any](r *http.Request) (T, error) {
 	var data T
 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		return data, fmt.Errorf("Error decoding json %w", err)
+		return data, fmt.Errorf("error decoding json %w", err)
 	}
 	return data, nil
 }
 
-func JsonMsg(key string, content any) map[string]any {
+func JSONmsg(key string, content any) map[string]any {
 	return map[string]any{
 		key: content,
 	}

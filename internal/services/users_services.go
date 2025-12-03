@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	ErrDuplicatedEmailOrUsername = errors.New("Invalid email or username")
-	ErrInvalidCredentials        = errors.New("Invalid credentials")
+	ErrDuplicatedEmailOrUsername = errors.New("invalid email or username")
+	ErrInvalidCredentials        = errors.New("invalid credentials")
 )
 
 type UserService struct {
@@ -73,7 +73,6 @@ func (us *UserService) AuthenticateUser(ctx context.Context, email, password str
 		}
 		fmt.Println("Error Comparing hash: %w", err)
 		return uuid.UUID{}, ErrInvalidCredentials
-		return uuid.UUID{}, err
 	}
 
 	return user.ID, nil

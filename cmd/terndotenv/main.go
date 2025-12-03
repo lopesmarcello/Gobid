@@ -24,5 +24,5 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println("Command execution successfuly:\n", err)
+	fmt.Println("Command execution successfuly:\n", string(output))
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/gorilla/websocket"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"github.com/lopesmarcello/gobid/internal/api"
@@ -29,9 +30,10 @@ func main() {
 
 	fmt.Println("Setting env:")
 	fmt.Println("User:", os.Getenv("GOBID_DATABASE_USER"))
+	fmt.Println("Database:", os.Getenv("GOBID_DATABASE_NAME"))
 
 	ctx := context.Background()
-	pool, err := pgxpool.New(ctx, fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
+	pool, err := pgxpool.New(ctx, fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable search_path=public",
 		os.Getenv("GOBID_DATABASE_USER"),
 		os.Getenv("GOBID_DATABASE_PASSWORD"),
 		os.Getenv("GOBID_DATABASE_HOST"),
@@ -55,12 +57,21 @@ func main() {
 	session.Cookie.HttpOnly = true
 	session.Cookie.SameSite = http.SameSiteLaxMode
 
-	api := api.Api{
-		Router:      chi.NewMux(),
-		UserService: services.NewUserService(pool),
-		Session:     session,
+	api := api.API{
+		Router:         chi.NewMux(),
+		UserService:    services.NewUserService(pool),
+		Session:        session,
+		ProductService: services.NewProductServive(pool),
+		BidsService:    services.NewBidsService(pool),
+		WsUpgrader: websocket.Upgrader{
+			CheckOrigin: func(r *http.Request) bool {
+				return true // DEV only
+			},
+		},
+		AuctionLobby: services.AuctionLobby{
+			Rooms: make(map[uuid.UUID]*services.AuctionRoom),
+		},
 	}
-
 	api.BindRoutes()
 
 	fmt.Println("Starting server on port :3080")
