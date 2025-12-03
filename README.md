@@ -23,7 +23,15 @@ O projeto é organizado em uma arquitetura limpa, separando as responsabilidades
 
 Essa separação facilita a manutenção, a testabilidade e a evolução do código.
 
-### 2. Geração de Código com `sqlc`
+### 2. Injeção de Dependência (Dependency Injection)
+O código faz uso extensivo de injeção de dependência para desacoplar os componentes. Em vez de uma camada criar suas próprias dependências (por exemplo, um serviço instanciando o seu próprio repositório de dados), elas são "injetadas" de fora, geralmente no momento da inicialização da aplicação (no `main.go`).
+
+**Vantagens:**
+- **Testabilidade:** Facilita a criação de testes unitários, pois permite substituir dependências reais por implementações falsas (`mocks` ou `stubs`).
+- **Flexibilidade:** Torna o código mais modular e fácil de reconfigurar ou estender.
+- **Clareza:** As dependências de cada componente ficam explícitas em sua assinatura.
+
+### 3. Geração de Código com `sqlc`
 Uma das partes mais interessantes do projeto foi o uso do **`sqlc`**. Em vez de usar um ORM completo, escrevemos queries SQL puras e o `sqlc` gerou o código Go correspondente, totalmente type-safe.
 
 **Vantagens:**
@@ -31,16 +39,16 @@ Uma das partes mais interessantes do projeto foi o uso do **`sqlc`**. Em vez de 
 - **Segurança:** Prevenção de SQL Injection, pois o `sqlc` cria funções tipadas.
 - **Produtividade:** Geração automática do código de acesso a dados, evitando boilerplate.
 
-### 3. Operações CRUD Completas
+### 4. Operações CRUD Completas
 A API implementa todas as operações de **C**reate, **R**ead, **U**pdate e **D**elete para as principais entidades da aplicação, como `Usuários`, `Produtos` e `Leilões`. Isso solidificou o conhecimento sobre como construir APIs RESTful de forma eficiente.
 
-### 4. Lances em Tempo Real com WebSockets
+### 5. Lances em Tempo Real com WebSockets
 Para a funcionalidade de lances, o plano de estudo incluiu a implementação de **WebSockets**. Isso permite que o backend envie atualizações de novos lances para todos os clientes conectados em tempo real, sem a necessidade de o cliente ficar fazendo requisições (polling) a todo momento. É a tecnologia ideal para aplicações dinâmicas e interativas como um leilão.
 
-### 5. Migrations de Banco de Dados com `tern`
+### 6. Migrations de Banco de Dados com `tern`
 O versionamento e a evolução do schema do banco de dados foram gerenciados com a ferramenta de migrations `tern`. Isso garante que as alterações no banco de dados sejam consistentes e reproduzíveis em qualquer ambiente.
 
-### 6. Conscientização sobre Segurança: CSRF
+### 7. Conscientização sobre Segurança: CSRF
 Embora não tenha sido implementado (pois o foco era uma API que poderia ser consumida por um cliente mobile ou SPA com autenticação via token), o projeto foi uma oportunidade para aprender sobre ataques de **Cross-Site Request Forgery (CSRF)**.
 
 **CSRF** é um tipo de ataque que engana o usuário autenticado a executar ações indesejadas. A proteção geralmente envolve o uso de tokens anti-CSRF, que garantem que a requisição foi originada pela própria aplicação, e não por um site malicioso.
