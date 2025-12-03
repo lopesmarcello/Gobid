@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -27,8 +26,6 @@ func (api *API) handleCreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	productID, err := api.ProductService.CreateProduct(r.Context(), userID, data.ProductName, data.Description, data.Baseprice, data.AuctionEnd)
 	if err != nil {
-		fmt.Println("erro:")
-		fmt.Println(err)
 		jsonutils.EncodeJSON(w, r, http.StatusUnprocessableEntity, jsonutils.JSONmsg("error", "failed to create product auction"))
 		return
 	}

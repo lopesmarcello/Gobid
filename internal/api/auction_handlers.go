@@ -12,7 +12,6 @@ import (
 )
 
 func (api *API) HandleSubscribeUserToAuction(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Subscribing user to auction")
 	rawProductID := chi.URLParam(r, "product_id")
 
 	productID, err := uuid.Parse(rawProductID)

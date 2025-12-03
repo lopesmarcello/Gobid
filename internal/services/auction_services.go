@@ -67,16 +67,12 @@ func (r *AuctionRoom) broadcastMessage(m Message) {
 
 	switch m.Kind {
 	case PlaceBid:
-		slog.Info("Kind certo")
 		bid, err := r.BidsService.PlaceBid(r.Context, r.ID, m.UserID, m.Amount)
 		if err != nil {
-			slog.Error("Deu erro", "err:", err)
 			if errors.Is(err, ErrBidIsTooLow) {
-				slog.Error("Deu erro bid too low", "err:", err)
 				if client, ok := r.Clients[m.UserID]; ok {
 					client.Send <- Message{Kind: FailedToPlaceBid, Message: ErrBidIsTooLow.Error()}
 				}
-				slog.Error("User not okay :(", "clients", r.Clients, "user_id", m.UserID)
 			}
 			return
 		}
@@ -90,7 +86,6 @@ func (r *AuctionRoom) broadcastMessage(m Message) {
 			client.Send <- newBidMessage
 		}
 	case InvalidJSON:
-		slog.Info("Kind invalid JSON")
 		client, ok := r.Clients[m.UserID]
 		if !ok {
 			slog.Error("Client not found in hasmap", "user_id", m.UserID)
@@ -98,7 +93,6 @@ func (r *AuctionRoom) broadcastMessage(m Message) {
 		}
 		client.Send <- m
 	default: // New: Handle all other message kinds
-		slog.Info("Kind default")
 		for id, client := range r.Clients {
 			if id == m.UserID {
 				continue // Do not send the message back to the sender
