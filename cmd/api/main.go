@@ -74,8 +74,14 @@ func main() {
 	}
 	api.BindRoutes()
 
-	fmt.Println("Starting server on port :3080")
-	if err := http.ListenAndServe(":3080", api.Router); err != nil {
+	port := os.Getenv("GOBID_APP_PORT")
+
+	if port == "" {
+		port = "3080"
+	}
+
+	fmt.Printf("Starting server on port :%s\n", port)
+	if err := http.ListenAndServe(":"+port, api.Router); err != nil {
 		panic(err)
 	}
 }
